@@ -2,7 +2,7 @@
 // import { PostsError } from "../error"
 
 import { PostsError } from "../../error";
-import EtherBlock, { TEtherModelPost } from "../model/EtherBlockModel";
+import EtherTransactions, { TEtherTransactionsModelPost } from "../model/EtherTransactionsModel";
 
 export type TFilter = {
   name?: string;
@@ -14,16 +14,16 @@ export type TFilter = {
   pageNumber?: number;
 }
 
-export default class EtherBlockService {
+export default class EtherTransactionsService {
 
   static async findByUid(id: number) {
-    const user = await EtherBlock.findByPk(id)
+    const user = await EtherTransactions.findByPk(id)
     if (!user) throw new PostsError(`${id} not found `)
     return user
   }
 
   static async findAll() {
-    const users = await EtherBlock.findAll({
+    const users = await EtherTransactions.findAll({
       order: [
         ['updatedAt', 'DESC'],
       ],
@@ -31,19 +31,21 @@ export default class EtherBlockService {
     return users
   }
 
-  static async createNew(jsonrpc:String,id:any, result:any) {
+  static async createNew(accessList:any,blockHash:any, blockNumber:any,chainId:any,from:any,gas:any,gasPrice:any,hash:any,input:any,maxFeePerGas:any,
+    maxPriorityFeePerGas:any,nonce:any,r:any,s:any,to:any,transactionIndex:any,type:any,v:any,value:any ) {
     try {      
-      const newuser = await EtherBlock.create({jsonrpc:jsonrpc,Id:id,result:result})
+      const newuser = await EtherTransactions.create({accessList:accessList,blockHash:blockHash,blockNumber:blockNumber,chainId:chainId,from:from,gas:gas,gasPrice:gasPrice,hash:hash,input:input,maxFeePerGas:maxFeePerGas,
+    maxPriorityFeePerGas:maxPriorityFeePerGas,nonce:nonce,r:r,s:s,to:to,transactionIndex:transactionIndex,type:type,v:v,value:value})
       return newuser;
     } catch (error) {
       throw new PostsError("Unable to create new ")
     }
   }
 
-  static async updateById(id: number, post: TEtherModelPost) {
+  static async updateById(id: number, post: TEtherTransactionsModelPost) {
     try {
-      await EtherBlockService.findByUid(id)
-      const [isUpdated] = await EtherBlock.update(post, {
+      await EtherTransactionsService.findByUid(id)
+      const [isUpdated] = await EtherTransactions.update(post, {
         where: { id },
         returning: true
       })
@@ -55,7 +57,7 @@ export default class EtherBlockService {
 
   static async deleteById(id: number) {
     try {
-      const deleted = await EtherBlock.destroy({
+      const deleted = await EtherTransactions.destroy({
         where: { id }
       });
       console.log(deleted);
@@ -67,7 +69,7 @@ export default class EtherBlockService {
   }
 
   static async findAndCountAll(paginate: any, where: any) {
-    const users = await EtherBlock.findAndCountAll({ ...paginate, where })
+    const users = await EtherTransactions.findAndCountAll({ ...paginate, where })
     if (!users) throw new PostsError("Unable to find and count");
     return users
   }

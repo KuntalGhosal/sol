@@ -45,7 +45,7 @@ app.use(bodyparser.urlencoded({ extended: false }))
 app.use(bodyparser.json());
 app.use("/block", userRoutes)
 app.use("/trans",transRoute)
-app.use("/etherBlock",EtherRoute)
+app.use("/etherData",EtherRoute)
 // app.use("/getUsers/",getUsers)
 
 

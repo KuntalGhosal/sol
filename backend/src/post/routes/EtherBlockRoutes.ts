@@ -3,15 +3,10 @@ import { body, param, query } from "express-validator";
 import EtherBlockService, { TFilter } from "../service/EtherBlockService";
 import axios from 'axios';
 import { expressQAsync, expressErrorHandler, validate, createResponse } from '../../helper'
+import EtherTransactionsService from "../service/EtherTransactionsService";
 const app = express.Router()
 
-const getBreeds = async (req: any) => {
-  try {
-    return await axios.get(`https://public-api.solscan.io/block/last?limit=${req}`)
-  } catch (error) {
-    console.error(error)
-  }
-}
+
 app.get('/',
   expressQAsync(async (req: Request, res: Response, next: NextFunction) => {
     // const dataArray :any =await getBreeds();
@@ -64,9 +59,8 @@ var obj:any = {}
 	if (!error && response.statusCode == 200) {
 		var json = response.body;
 		 obj = JSON.parse(json);
-		console.log(obj,"======");
-     const abc = await EtherBlockService.createNew(obj?.jsonrpc,obj?.id,obj?.result)
-     console.log(abc,"_________________");
+     await EtherBlockService.createNew(obj?.jsonrpc,obj?.id,obj?.result)
+     const newUser: any = await Promise.all(obj?.result?.transactions.map((data: any) => EtherTransactionsService.createNew(data.accessList,data.blockHash,data.blockNumber,data.chainId,data.from,data.gas,data.gasPrice,data.hash,data.input,data.maxFeePerGas,data.maxPriorityFeePerGas,data.nonce,data.r,data.s,data.to,data.transactionIndex,data.type,data.v,data.value)));
      
 		
 	}

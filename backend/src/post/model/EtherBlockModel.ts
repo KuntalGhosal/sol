@@ -25,10 +25,7 @@ let EtherBlock: TEtherModelPostModel<TEtherModelPost & Model> = <TEtherModelPost
       type: Sequelize.JSON,
       allowNull: true,
     },
-    programId: {
-      type: Sequelize.TEXT,
-      allowNull: true
-    },
+
   },
   {
     freezeTableName: true
