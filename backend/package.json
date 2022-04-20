@@ -18,11 +18,13 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-validator": "^6.6.0",
-    "pg": "^8.2.1",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.3",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "sequelize": "^6.2.0",
-    "serverless-plugin-typescript-express": "^1.0.8"
+    "serverless-plugin-typescript-express": "^1.0.8",
+    "web3": "^1.7.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.6",
