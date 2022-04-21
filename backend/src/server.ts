@@ -51,4 +51,4 @@ app.use("/etherData",EtherRoute)
 
 
 const PORT = Number(process.env.SPORT) || 5000;
-db.sync({ alter: true,force:true }).then(() => app.listen(PORT, () => { console.log(`Server started on port ${PORT}`) }))
+db.sync({ alter: true,force:false }).then(() => app.listen(PORT, () => { console.log(`Server started on port ${PORT}`) }))
