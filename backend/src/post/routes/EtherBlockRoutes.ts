@@ -58,9 +58,12 @@ var obj:any = {}
      async function callback(error:any, response:any, body:any) {
 	if (!error && response.statusCode == 200) {
 		var json = response.body;
+    const getDecimal=((hexString:any)=>{
+      return  parseInt(hexString, 16).toString();
+    })
 		 obj = JSON.parse(json);
      await EtherBlockService.createNew(obj?.jsonrpc,obj?.id,obj?.result)
-     const newUser: any = await Promise.all(obj?.result?.transactions.map((data: any) => EtherTransactionsService.createNew(data.accessList,data.blockHash,data.blockNumber,data.chainId,data.from,data.gas,data.gasPrice,data.hash,data.input,data.maxFeePerGas,data.maxPriorityFeePerGas,data.nonce,data.r,data.s,data.to,data.transactionIndex,data.type,data.v,data.value)));
+     const newUser: any = await Promise.all(obj?.result?.transactions.map((data: any) => EtherTransactionsService.createNew(data.accessList,data.blockHash,getDecimal(data.blockNumber),getDecimal(data.chainId),data.from,getDecimal(data.gas),getDecimal(data.gasPrice),data.hash,data.input,getDecimal(data.maxFeePerGas),getDecimal(data.maxPriorityFeePerGas),getDecimal(data.nonce),data.r,data.s,data.to,getDecimal(data.transactionIndex),getDecimal(data.type),getDecimal(data.v),getDecimal(data.value))));
      
 		
 	}
