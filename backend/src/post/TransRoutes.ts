@@ -61,19 +61,20 @@ app.post('/',
         newUser = dataArray && await Promise.all(dataArray.data.map((data: any,index:number) => {
           transId=index
           Trans.createNew(blockId, data.meta, data.transaction)
+          dataArray.data.map((data: any) => {
+            data.transaction.message.instructions.map((item: any) => {
+              programArray.push(Program.createNew(blockId, index+1,item.accounts, item.data, item.programId))
+            })
+          }
+          )
         }))
-        dataArray.data.map((data: any) => {
-          data.transaction.message.instructions.map((item: any) => {
-            programArray.push(Program.createNew(blockId, transId,item.accounts, item.data, item.programId))
-          })
-        }
-        )
-        if(newUser){var newProgram = await Promise.all(programArray)}
+       
+        var newProgram = await Promise.all(programArray)
       }
         blockId = blockId - 1;
       }
     // }
-    res.send(newUser)
+    res.send(dataArray)
 
   })
 )
