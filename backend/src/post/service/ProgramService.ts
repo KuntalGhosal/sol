@@ -31,9 +31,9 @@ export default class ProgramService {
     return users
   }
 
-  static async createNew(blockId:number,accounts:any, data:any,programId:any) {
+  static async createNew(blockId:number,transId:any,accounts:any, data:any,programId:any) {
     try {      
-      const newuser = await program.create({blockId:blockId,accounts:accounts,data:data,programId:programId})
+      const newuser = await program.create({blockId:blockId,transId:transId,accounts:accounts,data:data,programId:programId})
       return newuser;
     } catch (error) {
       throw new PostsError("Unable to create new ")

@@ -17,6 +17,10 @@ let Program: TTransPostModel<TProgramPost & Model> = <TTransPostModel<TProgramPo
       type: Sequelize.INTEGER,
       allowNull: true,
     }, 
+    transId: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+    },
     accounts: {
       type: Sequelize.ARRAY(Sequelize.TEXT),
       allowNull: true,

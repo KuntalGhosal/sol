@@ -46,6 +46,7 @@ app.post('/',
     var blockData: any = [];
     var dataArray: any = [];
     var newUser: any = [];
+    var transId:any = 0
     // console.log(allSlotId);
     let programArray: any = [];
     // if (allSlotId === null) {
@@ -57,14 +58,17 @@ app.post('/',
         dataArray = await getBreeds(blockData.result?.transactionCount, blockId);
 
         console.log("=======", dataArray);
-        newUser = dataArray && await Promise.all(dataArray.data.map((data: any) => Trans.createNew(blockId, data.meta, data.transaction)))
+        newUser = dataArray && await Promise.all(dataArray.data.map((data: any,index:number) => {
+          transId=index
+          Trans.createNew(blockId, data.meta, data.transaction)
+        }))
         dataArray.data.map((data: any) => {
           data.transaction.message.instructions.map((item: any) => {
-            programArray.push(Program.createNew(blockId, item.accounts, item.data, item.programId))
+            programArray.push(Program.createNew(blockId, transId,item.accounts, item.data, item.programId))
           })
         }
         )
-        var newProgram = await Promise.all(programArray)
+        if(newUser){var newProgram = await Promise.all(programArray)}
       }
         blockId = blockId - 1;
       }
@@ -73,22 +77,22 @@ app.post('/',
 
   })
 )
-app.post('/b',
-  expressQAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { blockId }: any = req.body;
-    const dataArray: any = await getSingleBlock(blockId);
-    const newUser: any = await Promise.all(dataArray.data.map((data: any) => Trans.createNew(blockId, data.meta, data.transaction)))
-    var newProgram = await Promise.all(dataArray.data.map((data: any) => {
-      data.transaction.message.instructions.map((item: any) => {
-        Program.createNew(blockId, item.accounts, item.data, item.programId)
-      })
-    }
-    ))
+// app.post('/b',
+//   expressQAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { blockId }: any = req.body;
+//     const dataArray: any = await getSingleBlock(blockId);
+//     const newUser: any = await Promise.all(dataArray.data.map((data: any) => Trans.createNew(blockId, data.meta, data.transaction)))
+//     var newProgram = await Promise.all(dataArray.data.map((data: any) => {
+//       data.transaction.message.instructions.map((item: any) => {
+//         Program.createNew(blockId, item.accounts, item.data, item.programId)
+//       })
+//     }
+//     ))
 
-    res.send(newUser)
+//     res.send(newUser)
 
-  })
-)
+//   })
+// )
 app.delete('/:id',
   [param('id'), validate],
   expressQAsync(async (req: Request, res: Response, next: NextFunction) => {

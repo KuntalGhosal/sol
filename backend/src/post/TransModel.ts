@@ -16,6 +16,7 @@ let Transaction: TTransPostModel<TTransPost & Model> = <TTransPostModel<TTransPo
       type: Sequelize.INTEGER,
       allowNull: true,
     },
+  
     meta: {
       type: Sequelize.JSON,
       allowNull: true,
