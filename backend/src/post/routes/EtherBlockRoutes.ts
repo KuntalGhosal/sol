@@ -10,6 +10,28 @@ import {
 } from "../../helper";
 import EtherTransactionsService from "../service/EtherTransactionsService";
 const app = express.Router();
+// var Eth = require('web3-eth');
+
+// // "Eth.providers.givenProvider" will be set if in an Ethereum supported browser.
+// var eth = new Eth(Eth.givenProvider || 'https://mainnet.infura.io/v3/87ac8ac7975e4b4d99c5840792f0884d');
+
+// or using the web3 umbrella package
+
+var Web3 = require("web3");
+var web3 = new Web3(
+  Web3.givenProvider ||
+    "https://mainnet.infura.io/v3/87ac8ac7975e4b4d99c5840792f0884d"
+);
+const getSingleBlock = async (number: any) => {
+  const data = await web3.eth.getBlock(number);
+
+  return data;
+};
+const getTransactions = async (transId: any) => {
+  const data = await web3.eth.getTransaction(transId);
+
+  return data;
+};
 
 app.get(
   "/",
@@ -41,88 +63,86 @@ app.get(
 app.post(
   "/",
   expressQAsync(async (req: Request, res: Response, next: NextFunction) => {
-    //  const { count }: any = req.body;
-    //  const dataArray: any = await getBreeds(count);
-    //  const newUser: any = await Promise.all(dataArray.data.map((data: any) => Post.createNew(data.currentSlot, data.result)))
-    //  res.json(newUser)
-    const dotenv = require("dotenv").config();
-    var request = require("request");
-
-    var headers = {
-      "Content-Type": "application/json",
-    };
-
-    var dataString =
-      '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest",true], "id":1}';
-
-    var options = {
-      url: `https://rinkeby.infura.io/v3/87ac8ac7975e4b4d99c5840792f0884d`,
-      // url:"https://rinkeby.infura.io/v3/87ac8ac7975e4b4d99c5840792f0884d#relay_sendTransaction",
-      method: "POST",
-      headers: headers,
-      body: dataString,
-    };
-    var obj: any = {};
-    async function callback(error: any, response: any, body: any) {
-      if (!error && response.statusCode == 200) {
-        var json = response.body;
-        const getDecimal = (hexString: any) => {
-          return parseInt(hexString, 16).toString();
-        };
-        obj = JSON.parse(json);
-        await EtherBlockService.createNew(
-          obj?.jsonrpc,
-          obj?.id,
-          getDecimal(obj?.result?.baseFeePerGas),
-          getDecimal(obj?.result?.difficulty),
-          obj?.result?.extraData,
-          getDecimal(obj?.result?.gasLimit),
-          getDecimal(obj?.result?.gasUsed),
-          obj?.result?.hash,
-          obj?.result?.logsBloom,
-          getDecimal(obj?.result?.miner),
-          getDecimal(obj?.result?.mixHash),
-          getDecimal(obj?.result?.nonce),
-          getDecimal(obj?.result?.number),
-          obj?.result?.parentHash,
-          obj?.result?.receiptsRoot,
-          obj?.result?.sha3Uncles,
-          getDecimal( obj?.result?.size),
-          obj?.result?.stateRoot,
-          getDecimal(obj?.result?.timestamp),
-          getDecimal(obj?.result?.totalDifficulty),
-          obj?.result?.transactionsRoot,
-          obj?.result?.uncles
+    var { count, blockId }: any = req.body;
+    var blockData: any = [];
+    var dataArray: any = [];
+    var newUser: any = [];
+    var transId: any = 0;
+    // console.log(allSlotId);
+    let programArray: any = [];
+    // if (allSlotId === null) {
+    for (let i = 0; i < count; i++) {
+      const allSlotId = await EtherBlockService.findByNumber(blockId);
+      if (allSlotId === null) {
+        blockData = await getSingleBlock(blockId);
+        const data = await EtherBlockService.createNew(
+          blockData.baseFeePerGas,
+          blockData.difficulty,
+          blockData.extraData,
+          blockData.gasLimit,
+          blockData.gasUsed,
+          blockData.hash,
+          blockData.logsBloom,
+          blockData.miner,
+          blockData.mixHash,
+          blockData.nonce,
+          blockData.number,
+          blockData.parentHash,
+          blockData.receiptsRoot,
+          blockData.sha3Uncles,
+          blockData.size,
+          blockData.stateRoot,
+          blockData.timestamp,
+          blockData.totalDifficulty,
+          blockData.transactions,
+          blockData.transactionsRoot,
+          blockData.uncles
         );
-        const newUser: any = await Promise.all(
-          obj?.result?.transactions.map((data: any) =>
-            EtherTransactionsService.createNew(
-              data.accessList,
-              data.blockHash,
-              getDecimal(data.blockNumber),
-              getDecimal(data.chainId),
-              data.from,
-              getDecimal(data.gas),
-              getDecimal(data.gasPrice),
-              data.hash,
-              data.input,
-              getDecimal(data.maxFeePerGas),
-              getDecimal(data.maxPriorityFeePerGas),
-              getDecimal(data.nonce),
-              data.r,
-              data.s,
-              data.to,
-              getDecimal(data.transactionIndex),
-              getDecimal(data.type),
-              getDecimal(data.v),
-              getDecimal(data.value)
-            )
-          )
-        );
+        newUser =
+          blockData &&
+          (await Promise.all(
+            blockData.transactions.map(async (data: any, index: number) => {
+              const allTrans = await getTransactions(data);
+              
+              await  EtherTransactionsService.createNew(
+                  allTrans.accessList,
+                  allTrans.blockHash,
+                  allTrans.blockNumber,
+                  allTrans.chainId,
+                  allTrans.from,
+                  allTrans.gas,
+                  allTrans.gasPrice,
+                  allTrans.hash,
+                  allTrans.input,
+                  allTrans.maxFeePerGas,
+                  allTrans.maxPriorityFeePerGas,
+                  allTrans.nonce,
+                  allTrans.r,
+                  allTrans.s,
+                  allTrans.to,
+                  allTrans.transactionIndex,
+                  allTrans.type,
+                  allTrans.v,
+                  allTrans.value
+              );
+              // Trans.createNew(blockId, data.meta, data.transaction)
+            })
+          ));
       }
+      blockId = blockId - 1;
     }
 
-    request(options, callback);
+    //
+
+    // console.log("=======", dataArray);
+    // newUser = dataArray && await Promise.all(dataArray.data.map((data: any,index:number) => {
+    //   transId=index
+
+    //   )
+    // }))
+
+    // }
+    // }
     res.send("created");
   })
 );

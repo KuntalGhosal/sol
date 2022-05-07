@@ -22,7 +22,7 @@ let EtherTransactions: TEtherTransactionsModelPostModel<TEtherTransactionsModelP
       allowNull: true,
     },
     blockNumber: {
-      type: Sequelize.TEXT,
+      type: Sequelize.BIGINT,
       allowNull: true,
     },
     chainId: {
@@ -34,7 +34,7 @@ let EtherTransactions: TEtherTransactionsModelPostModel<TEtherTransactionsModelP
         allowNull: true
       },
       gas:   {
-        type: Sequelize.TEXT,
+        type: Sequelize.BIGINT,
         allowNull: true
       },
       gasPrice:    {
@@ -58,7 +58,7 @@ let EtherTransactions: TEtherTransactionsModelPostModel<TEtherTransactionsModelP
         allowNull: true
       },
       nonce:      {
-        type: Sequelize.TEXT,
+        type: Sequelize.BIGINT,
         allowNull: true
       },
       r:      {
@@ -74,11 +74,11 @@ let EtherTransactions: TEtherTransactionsModelPostModel<TEtherTransactionsModelP
         allowNull: true
       },
       transactionIndex:      {
-        type: Sequelize.TEXT,
+        type: Sequelize.BIGINT,
         allowNull: true
       },
       type:      {
-        type: Sequelize.TEXT,
+        type: Sequelize.BIGINT,
         allowNull: true
       },
       v:      {

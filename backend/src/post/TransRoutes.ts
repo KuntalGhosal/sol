@@ -63,7 +63,7 @@ app.post('/',
           Trans.createNew(blockId, data.meta, data.transaction)
           dataArray.data.map((data: any) => {
             data.transaction.message.instructions.map((item: any) => {
-              programArray.push(Program.createNew(blockId, index+1,item.accounts, item.data, item.programId))
+              programArray.push(Program.createNew(blockId, data?.transaction?.signatures[0],item.accounts, item.data, item.programId))
             })
           }
           )

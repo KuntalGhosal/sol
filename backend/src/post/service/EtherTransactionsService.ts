@@ -38,6 +38,8 @@ export default class EtherTransactionsService {
     maxPriorityFeePerGas:maxPriorityFeePerGas,nonce:nonce,r:r,s:s,to:to,transactionIndex:transactionIndex,type:type,v:v,value:value})
       return newuser;
     } catch (error) {
+      console.log(error,"err");
+      
       throw new PostsError("Unable to create new ")
     }
   }

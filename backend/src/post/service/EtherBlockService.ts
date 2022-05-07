@@ -29,11 +29,9 @@ export default class EtherBlockService {
   }
 
   static async createNew(
-    jsonrpc: String,
-    id: any,
     baseFeePerGas: any,
-    difficulty:any,
-    extraData:any,
+    difficulty: any,
+    extraData: any,
     gasLimit:any,
     gasUsed:any,
     hash:any,
@@ -49,13 +47,12 @@ export default class EtherBlockService {
     stateRoot:any,
     timestamp:any,
     totalDifficulty:any,
+    transactions:any,
     transactionsRoot:any,
     uncles:any
   ) {
     try {
       const newuser = await EtherBlock.create({
-        jsonrpc: jsonrpc,
-        Id: id,
         baseFeePerGas: baseFeePerGas,
         difficulty: difficulty,
         extraData: extraData,
@@ -74,11 +71,14 @@ export default class EtherBlockService {
         stateRoot: stateRoot,
         timestamp: timestamp,
         totalDifficulty: totalDifficulty,
+        transactions:transactions,
         transactionsRoot: transactionsRoot,
         uncles: uncles,
       });
       return newuser;
     } catch (error) {
+      console.log("====",error);
+      
       throw new PostsError("Unable to create new ");
     }
   }
@@ -94,6 +94,11 @@ export default class EtherBlockService {
     } catch (error) {
       throw new PostsError("No data to update");
     }
+  }
+  static async findByNumber(number: any) {
+    const user = await EtherBlock.findOne({ where: { number:number } })
+    // if (!user) throw new PostsError(`${currentSlot} not found `)
+    return user
   }
 
   static async deleteById(id: number) {
